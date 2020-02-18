@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  ##########################################
+  # Overrides for oada-core services:
+  ##########################################
+
+  # Add ourselves to yarn to do yarn install
+  yarn:
+    volumes:
+      - ./services-available/unfisk:/code/unfisk
+
+  # Add ourselves to admin container:
+  admin:
+    volumes:
+      - ./services-available/unfisk:/code/unfisk
+
+
+  ###############################################
+  # This service's definition:
+  ###############################################
+  unfisk:
+    depends_on:
+      - startup
+    build:
+      context: ./services-available/unfisk
+    container_name: unfisk
+    restart: always
+    networks:
+      - http_net
+      - startup_net
+      - arango_net
+    volumes:
+      - ./services-available/unfisk:/code/unfisk
+      - ./oada-core/libs:/code/libs
+      - ./oada-srvc-docker-config.js:/oada-srvc-docker-config.js
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED
+      - NODE_ENV=${NODE_ENV:-development}
+      - DEBUG
