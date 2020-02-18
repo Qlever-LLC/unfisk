@@ -22,7 +22,7 @@ async function unfisk () {
     cache: false
   })
 
-  conn.get({
+  const { data } = await conn.get({
     path: flat,
     watch: {
       payload: {
@@ -32,6 +32,13 @@ async function unfisk () {
       callback: flatHandler
     }
   })
+
+  // Make "change" for current state?
+  const change = {
+    type: 'merge',
+    body: data
+  }
+  await flatHandler({response: { change }, conn, token})
 }
 
 // TODO: Hopefully this bug in oada-cache gets fixed
@@ -61,7 +68,6 @@ async function flatHandler ({ response: { change }, conn, token }) {
       )
       break
     case 'delete':
-      // TODO: Handle deleting items
       break
     default:
       warn(`Ignoring unknown change type ${type} to flat list`)
