@@ -38,14 +38,14 @@ async function unfisk () {
     type: 'merge',
     body: data
   }
-  await flatHandler({response: { change }, conn, token})
+  await flatHandler({ response: { change }, conn, token })
 }
 
 // TODO: Hopefully this bug in oada-cache gets fixed
-type Body<T> = {_rev: string, _id:string } & T
+type Body<T> = { _rev: string; _id: string } & T
 type WeirdBody<T> = { data: Body<T> }
 type ReturnBody<T> = Body<T> | WeirdBody<T>
-function isWeird<T>(body: ReturnBody<T>): body is WeirdBody<T> {
+function isWeird<T> (body: ReturnBody<T>): body is WeirdBody<T> {
   return (body as Body<T>)._rev === undefined
 }
 function fixBody<T> (body: ReturnBody<T>): Body<T> {

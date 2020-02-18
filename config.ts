@@ -15,8 +15,8 @@ export default conf
 
 // Make types for the config
 type Config = {
-  domain: string,
-  token: string,
-  flatList: string,
+  domain: string
+  token: string
+  flatList: string
   unflatList: string
 }
