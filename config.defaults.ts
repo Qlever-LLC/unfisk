@@ -1,4 +1,6 @@
 export default {
-    domain: 'localhost'
-    // TODO: Put default config values here
+  domain: 'proxy',
+  token: 'god',
+  flatList: '/bookmarks/trellisfw/asns-pending',
+  unflatList: '/bookmarks/trellisfw/asns'
 }
