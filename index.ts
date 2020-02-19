@@ -19,7 +19,7 @@ const unflat: string = config.get('unflatList')
 
 async function unfisk () {
   const conn = await oada.connect({
-    domain: `https://${domain}`,
+    domain: `${domain}`,
     token,
     cache: false
   })

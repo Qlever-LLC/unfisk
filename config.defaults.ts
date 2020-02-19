@@ -1,5 +1,5 @@
 export default {
-  domain: 'proxy',
+  domain: 'http://proxy',
   token: 'god',
   flatList: '/bookmarks/trellisfw/asn-staging',
   unflatList: '/bookmarks/trellisfw/asns'
