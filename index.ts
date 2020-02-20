@@ -96,8 +96,8 @@ async function unflatten ({ item, id, conn, token }) {
     headers: { 'Content-Type': 'application/vnd.trellisfw.asns.1+json' },
     path: `${unflat}/${id}`,
     data: {
-      _id: id,
-      _rev: '0' // TODO: Should it be versioned??
+      _id: `resources/${id}`,
+      _rev: 0 // TODO: Should it be versioned??
     }
   })
 
@@ -111,83 +111,46 @@ async function unflatten ({ item, id, conn, token }) {
 }
 
 async function ensureAllPathsExist (conn) {
-  trace(
-    'ensureAllPathsExist: ensuring we have /bookmarks/trellisfw/asns and /bookmarks/trellisfw/asn-staging'
-  )
-  // Ensure the trellisfw path exists, and the asn-staging and asn paths exist
-  let id = false
-  const bookmarks = await conn.get({ path: '/bookmarks' })
-  if (!bookmarks) return error('Could not get bookmarks when ensuring path!')
-  try {
-    await conn.get({ path: '/bookmarks/trellisfw' })
-  } catch (e) {
-    if (e.response.status !== 404)
-      return error(
-        'Tried to get /bookmarks/trellisfw, but result was something other than 200 or 404'
-      )
-    id = uuid()
-    // These should throw if they fail, aborting the whole thing...
-    info('ensuring trellisfw: Creating /resources/' + id)
-    await conn.put({
-      path: '/resources/' + id,
-      data: {},
-      headers: { 'content-type': 'application/vnd.trellisfw.1+json' }
-    })
-    info('ensuring trellisfw: linking new resource to /bookmarks/trellisfw')
-    await conn.put({
-      path: '/bookmarks',
-      data: { trellisfw: { _id: 'resources/' + id } },
-      headers: { 'content-type': 'application/vnd.oada.bookmarks.1+json' }
-    })
-  }
-  try {
-    await conn.get({ path: '/bookmarks/trellisfw/asns' })
-  } catch (e) {
-    if (e.response.status !== 404)
-      return error(
-        'Tried to get /bookmarks/trellisfw, but result was something other than 200 or 404'
-      )
-    id = uuid()
-    info('ensuring asns: Creating /resources/', id)
-    await conn.put({
-      path: '/resources/' + id,
-      data: {},
-      headers: { 'content-type': 'application/vnd.trellisfw.asns.1+json' }
-    })
-    info(
-      'ensuring asns: linking new resource to /bookmarks/trellisfw/asn-staging'
-    )
-    await conn.put({
-      path: '/bookmarks/trellisfw',
-      data: { asns: { _id: 'resources/' + id } },
-      headers: { 'content-type': 'application/vnd.trellisfw.1+json' }
-    })
-  }
-  try {
-    await conn.get({ path: '/bookmarks/trellisfw/asn-staging' })
-  } catch (e) {
-    if (e.response.status !== 404)
-      return error(
-        'Tried to get /bookmarks/trellisfw/asn-staging, but result was something other than 200 or 404'
-      )
-    id = uuid()
-    info('ensuring asn-staging: Creating /resources/', id)
-    await conn.put({
-      path: '/resources/' + id,
-      data: {},
-      headers: {
-        'content-type': 'application/vnd.trellisfw.asn-staging.1+json'
+  const tree = {
+    bookmarks: {
+      _type: 'application/vnd.oada.bookmarks.1+json',
+      trellisfw: {
+        _type: 'application/vnd.trellisfw.1+json',
+        asns: {
+          _type: 'applicaiton/vnd.trellisfw.asns.1+json'
+        },
+        'asn-staging': {
+          _type: 'application/vnd.trellisfw.asn-staging.1+json'
+        }
       }
-    })
-    info(
-      'ensuring asns: linking new resource to /bookmarks/trellisfw/asn-staging'
-    )
-    await conn.put({
-      path: '/bookmarks/trellisfw',
-      data: { 'asn-staging': { _id: 'resources/' + id } },
-      headers: { 'content-type': 'application/vnd.trellisfw.1+json' }
-    })
+    }
   }
+  return Promise.map(
+    ['/bookmarks/trellisfw/asns', '/bookmarks/trellisfw/asn-staging'],
+    async path => {
+      trace('ensureAllPathsExist: ensuring we have ' + path)
+      try {
+        await conn.get({ path })
+      } catch (e) {
+        if (e.response.status !== 404) {
+          return error(
+            'ensureAllPathsExist: Tried to get ' +
+              path +
+              ', but result was something other than 200 or 404'
+          )
+        }
+        info(
+          'ensureAllPathsExist: Path ' +
+            path +
+            ' did not exist, doing tree put to create it'
+        )
+        return await conn.put({ path, data: {}, tree })
+      }
+      info(
+        'ensureAllPathsExist: Path ' + path + ' exists already, leaving as-is'
+      )
+    }
+  )
 }
 
 unfisk()
