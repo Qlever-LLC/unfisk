@@ -42,6 +42,7 @@ async function unfisk () {
     type: 'merge',
     body: data
   }
+  trace('Processing fake change on startup: ', change);
   await flatHandler({ response: { change }, conn, token })
 }
 
@@ -67,6 +68,7 @@ async function flatHandler ({ response: { change }, conn, token }) {
   const items = Object.keys(data || {}).filter(r => !r.match(/^_/))
   switch (type) {
     case 'merge':
+      trace('Unflattening type merge');
       await Promise.each(items, id =>
         unflatten({ item: data[id], id, conn, token }).catch(error)
       )
@@ -83,6 +85,7 @@ async function unflatten ({ item, id, conn, token }) {
   trace(item)
 
   // Create resource to which to link
+  trace('Creating new resource');
   await conn.put({
     token,
     headers: { 'Content-Type': 'application/vnd.trellisfw.asn.sf.1+json' },
@@ -91,6 +94,7 @@ async function unflatten ({ item, id, conn, token }) {
   })
 
   // Link the newly created resource in unflat list
+  trace('Putting new resource into asns list');
   await conn.put({
     token,
     headers: { 'Content-Type': 'application/vnd.trellisfw.asns.1+json' },
@@ -101,6 +105,7 @@ async function unflatten ({ item, id, conn, token }) {
     }
   })
 
+  trace('Deleting original asn-staging..');
   // Remove unflattened item from flat list
   await conn.delete({
     token,
@@ -117,7 +122,7 @@ async function ensureAllPathsExist (conn) {
       trellisfw: {
         _type: 'application/vnd.trellisfw.1+json',
         asns: {
-          _type: 'applicaiton/vnd.trellisfw.asns.1+json'
+          _type: 'application/vnd.trellisfw.asns.1+json'
         },
         'asn-staging': {
           _type: 'application/vnd.trellisfw.asn-staging.1+json'
