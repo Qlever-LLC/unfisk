@@ -1,8 +1,7 @@
 import debug from 'debug'
 import { Promise } from 'bluebird'
 
-import oada from '@oada/oada-cache'
-import uuid from 'uuid/v4'
+import oada from '@oada/client'
 import _ from 'lodash'
 
 import config from './config'
@@ -21,20 +20,13 @@ async function unfisk () {
   const conn = await oada.connect({
     domain: `${domain}`,
     token,
-    cache: false
   })
 
   await ensureAllPathsExist(conn)
 
-  const { data } = await conn.get({
+  const { data } = await conn.watch({
     path: flat,
-    watch: {
-      payload: {
-        conn,
-        token
-      },
-      callback: flatHandler
-    }
+    watchCallback: flatHandler
   })
 
   // Make "change" for current state?
@@ -58,7 +50,7 @@ function fixBody<T> (body: ReturnBody<T>): Body<T> {
 }
 
 // Run when there is a change to the flat list
-async function flatHandler ({ response: { change }, conn, token }) {
+async function flatHandler (change) {
   info('Running flat watch handler')
   trace(change)
 
@@ -87,7 +79,6 @@ async function unflatten ({ item, id, conn, token }) {
   // Create resource to which to link
   trace('Creating new resource');
   await conn.put({
-    token,
     headers: { 'Content-Type': 'application/vnd.trellisfw.asn.sf.1+json' },
     path: `/resources/${id}`,
     data: item
@@ -96,7 +87,6 @@ async function unflatten ({ item, id, conn, token }) {
   // Link the newly created resource in unflat list
   trace('Putting new resource into asns list');
   await conn.put({
-    token,
     headers: { 'Content-Type': 'application/vnd.trellisfw.asns.1+json' },
     path: `${unflat}/${id}`,
     data: {
@@ -108,7 +98,6 @@ async function unflatten ({ item, id, conn, token }) {
   trace('Deleting original asn-staging..');
   // Remove unflattened item from flat list
   await conn.delete({
-    token,
     // TODO: Why do I need a content-type header?
     headers: { 'Content-Type': 'application/json' },
     path: `${flat}/${id}`
