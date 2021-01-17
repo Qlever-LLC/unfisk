@@ -1,16 +1,12 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
-    "target": "ES2018",
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "lib": ["ES2018"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": true,
     "sourceMap": true,
-    "outDir": "dist",
-    "baseUrl": ".",
-    "paths": {
-      "*": ["node_modules/*"]
-    }
-  },
-  "include": ["*.ts"],
-  "exclude": ["node_modules"]
+    "declaration": true
+  }
 }

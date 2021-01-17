@@ -59,13 +59,21 @@ async function flatHandler(change: Readonly<Change>) {
   trace('flatHandler: new change received = ', change);
 
   const { type, body: data } = change;
+
+  // Try to figure out the day from the change
+  const time: number | undefined = (data as any)?._meta?.modified;
+  if (!time) {
+    warn('failed to process day, using today');
+  }
+  const day = moment(time ? time * 1000 : undefined).format('YYYY-MM-DD');
+
   // Get new items ignoring _ keys
   const items = Object.keys(data || {}).filter((r) => !r.match(/^_/));
   trace('flatHandler: there are ' + items.length + ' non-oada keys to handle');
   switch (type) {
     case 'merge':
       await Promise.each(items, (id) =>
-        unflatten({ item: data[id], id }).catch(error)
+        unflatten({ item: (data as any)[id], id, day }).catch(error)
       );
       break;
     case 'delete':
@@ -76,7 +84,15 @@ async function flatHandler(change: Readonly<Change>) {
   }
 }
 
-async function unflatten({ item, id }) {
+async function unflatten({
+  item,
+  id,
+  day,
+}: {
+  item: string;
+  id: string;
+  day: string;
+}) {
   info(`unflatten: Unflattening item ${id}`);
   trace('unflatten: item = ', item);
 
@@ -90,7 +106,6 @@ async function unflatten({ item, id }) {
 
   // Link the newly created resource in unflat list
   trace("Putting new resource into asns list under today's day-index");
-  const day = moment().format('YYYY-MM-DD');
   await conn.put({
     contentType: 'application/vnd.trellisfw.asns.1+json',
     path: `${unflat}/day-index/${day}/${id}`,

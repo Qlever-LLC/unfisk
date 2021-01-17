@@ -54,6 +54,11 @@
   resolved "https://registry.yarnpkg.com/@overleaf/o-error/-/o-error-3.2.0.tgz#52d069311304f52c2aa2da449b01d6103e568297"
   integrity sha512-H2HjuzoRBKNDy3pEZnVt+Pa6gPZPEENALXzvJy99ijOE5z6iirUkp2EMP/NTPfvyfUPz32cY04Jn10jjVowerg==
 
+"@tsconfig/node14@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@tsconfig/node14/-/node14-1.0.0.tgz#5bd046e508b1ee90bc091766758838741fdefd6e"
+  integrity sha512-RKkL8eTdPv6t5EHgFKIVQgsDapugbuOptNd9OOunN/HAkzmmTnZELx1kNCK0rSdUYGmiFMM3rRQMAWiyp023LQ==
+
 "@types/bluebird@^3.5.32":
   version "3.5.33"
   resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.33.tgz#d79c020f283bd50bd76101d7d300313c107325fc"
