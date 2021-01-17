@@ -6,7 +6,6 @@ import _ from 'lodash'
 import oerror from '@overleaf/o-error'
 import moment from 'moment'
 import semver from 'semver'
-import pkg from './package.json'
 
 import config from './config'
 
