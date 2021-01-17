@@ -9,7 +9,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@oada/client": "^2.1.1",
+    "@oada/client": "https://github.com/OADA/client.git#maxPayload",
     "@overleaf/o-error": "^3.0.0",
     "bluebird": "^3.7.2",
     "debug": "^4.1.1",
