@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { Promise } from 'bluebird';
+import Bluebird from 'bluebird';
 
 import { Json, connect, OADAClient, Change } from '@oada/client';
 import moment from 'moment';
@@ -20,6 +20,9 @@ const token: string = config.get('token');
 const flat: string = config.get('flatList');
 const unflat: string = config.get('unflatList'); // day-index will be added to this
 const tree: object = config.get('unflatTree');
+
+// Rate limit to not kill OADA?
+const rateLimit = 1000; // miliseconds
 
 // TODO: Hopefully this bug in oada-cache gets fixed
 type Body<T> = { _rev: string; _id: string } & T;
@@ -73,9 +76,13 @@ async function flatHandler(change: Readonly<Change>) {
   trace('flatHandler: there are ' + items.length + ' non-oada keys to handle');
   switch (type) {
     case 'merge':
-      await Promise.each(items, (id) =>
-        unflatten({ item: (data as any)[id], id, day }).catch(error)
-      );
+      await Bluebird.each(items, (id) => {
+        const done = unflatten({ item: (data as any)[id], id, day }).catch(
+          error
+        );
+        const delay = Bluebird.delay(rateLimit);
+        return Bluebird.all([done, delay]);
+      });
       break;
     case 'delete':
       trace('flatHandler: delete change, ignoriing');
@@ -141,7 +148,7 @@ async function ensureAllPathsExist(conn: OADAClient) {
       },
     },
   };
-  return Promise.map(
+  return Bluebird.map(
     ['/bookmarks/trellisfw/asns', '/bookmarks/trellisfw/asn-staging'],
     async (path) => {
       trace('ensureAllPathsExist: ensuring we have ' + path);
