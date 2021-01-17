@@ -16,9 +16,10 @@ export default {
           'day-index': {
             '*': {
               '_type': 'application/vnd.trellisfw.asns.1+json',
-
+              '_rev': 0,
               '*': {
                 _type: 'application/vnd.trellisfw.asn.sf.1+json',
+                _rev: 0,
               },
             },
           },
