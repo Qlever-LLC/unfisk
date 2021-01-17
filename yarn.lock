@@ -16,23 +16,9 @@
   resolved "https://registry.yarnpkg.com/@jsdevtools/ono/-/ono-7.1.3.tgz#9df03bbd7c696a5c58885c34aa06da41c8543796"
   integrity sha512-4JQNk+3mVzK3xh2rqd6RB4J46qUR19azEHBneZyTZM+c456qOrbbM/5xcR8huNCCcbVt7+UmizG6GuUvPvKUYg==
 
-"@oada/client@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@oada/client/-/client-2.1.1.tgz#26700ec0aac3ab4a9cf04b27dd7b41e9c89add58"
-  integrity sha512-AZO07n7Bz6+Ay9GaE9ZludbEGYfMVlCnCux9nvJ9Oa+rNu355aGdoDJ4EzLCNJA59ZU0v0kqryvGthpbsD5J5Q==
-  dependencies:
-    "@oada/types" "^1.0.6"
-    cross-fetch "^3.0.6"
-    debug "^4.1.1"
-    isomorphic-ws "^4.0.1"
-    ksuid "^1.2.0"
-    p-queue "^6.4.0"
-    reconnecting-websocket "^4.4.0"
-    ws "^7.2.3"
-
 "@oada/client@https://github.com/OADA/client.git#maxPayload":
   version "2.1.1"
-  resolved "https://github.com/OADA/client.git#f7a24fa5d797265d7ef9d5b854ce0908e8a83586"
+  resolved "https://github.com/OADA/client.git#c7700de54da2f99c46aee2532a8b0a946c4685fb"
   dependencies:
     "@oada/types" "^1.0.6"
     cross-fetch "^3.0.6"
