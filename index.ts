@@ -3,6 +3,10 @@ import { Promise } from 'bluebird'
 
 import { Json, connect } from '@oada/client'
 import _ from 'lodash'
+import oerror from '@overleaf/o-error'
+import moment from 'moment'
+import semver from 'semver'
+import pkg from './package.json'
 
 import config from './config'
 
@@ -18,7 +22,7 @@ if (domain === 'proxy' || domain === 'localhost') {
 }
 const token: string = config.get('token')
 const flat: string = config.get('flatList')
-const unflat: string = config.get('unflatList')
+const unflat: string = config.get('unflatList') // day-index will be added to this
 
 // TODO: Hopefully this bug in oada-cache gets fixed
 type Body<T> = { _rev: string; _id: string } & T
@@ -37,7 +41,6 @@ async function unfisk () {
     domain: `${domain}`,
     token,
   });
-
 
   await ensureAllPathsExist(conn)
 
@@ -90,10 +93,11 @@ async function unflatten ({ item, id }) {
   })
 
   // Link the newly created resource in unflat list
-  trace('Putting new resource into asns list');
+  trace('Putting new resource into asns list under today\'s day-index');
+  const day = moment().format('YYYY-MM-DD');
   await conn.put({
     headers: { 'Content-Type': 'application/vnd.trellisfw.asns.1+json' },
-    path: `${unflat}/${id}`,
+    path: `${unflat}/day-index/${day}/${id}`,
     data: {
       _id: `resources/${id}`,
       _rev: 0 // TODO: Should it be versioned??
