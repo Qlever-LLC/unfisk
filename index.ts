@@ -19,6 +19,7 @@ if (domain === 'proxy' || domain === 'localhost') {
 const token: string = config.get('token');
 const flat: string = config.get('flatList');
 const unflat: string = config.get('unflatList'); // day-index will be added to this
+const tree: object = config.get('unflatTree');
 
 // TODO: Hopefully this bug in oada-cache gets fixed
 type Body<T> = { _rev: string; _id: string } & T;
@@ -109,6 +110,7 @@ async function unflatten({
   await conn.put({
     contentType: 'application/vnd.trellisfw.asns.1+json',
     path: `${unflat}/day-index/${day}/${id}`,
+    tree,
     data: {
       _id: `resources/${id}`,
       _rev: 0, // TODO: Should it be versioned??
