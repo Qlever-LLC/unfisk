@@ -97,20 +97,12 @@ async function unflatten({
   id,
   day,
 }: {
-  item: string;
+  item: any;
   id: string;
   day: string;
 }) {
   info(`unflatten: Unflattening item ${id}`);
   trace('unflatten: item = ', item);
-
-  // Create resource to which to link
-  trace('Creating new resource');
-  await conn.put({
-    contentType: 'application/vnd.trellisfw.asn.sf.1+json',
-    path: `/resources/${id}`,
-    data: item,
-  });
 
   // Link the newly created resource in unflat list
   trace("Putting new resource into asns list under today's day-index");
@@ -118,10 +110,7 @@ async function unflatten({
     contentType: 'application/vnd.trellisfw.asns.1+json',
     path: `${unflat}/day-index/${day}/${id}`,
     tree,
-    data: {
-      _id: `resources/${id}`,
-      _rev: 0, // TODO: Should it be versioned??
-    },
+    data: item,
   });
 
   trace('Deleting original asn-staging..');
