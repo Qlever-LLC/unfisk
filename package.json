@@ -10,7 +10,7 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "@oada/client": "https://github.com/OADA/client.git#maxPayload",
+    "@oada/client": "^2.2.1",
     "@overleaf/o-error": "^3.0.0",
     "bluebird": "^3.7.2",
     "debug": "^4.1.1",
@@ -24,7 +24,7 @@
     "@types/bluebird": "^3.5.32",
     "@types/debug": "^4.1.5",
     "@types/nconf": "^0.10.0",
-    "@types/node": "^14.0.14",
+    "@types/node": "^14.14.22",
     "chai": "^4.2.0",
     "mocha": "^8.2.1",
     "ts-node": "^9.1.1",
