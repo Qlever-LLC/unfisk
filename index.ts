@@ -22,7 +22,8 @@ const unflat: string = config.get('unflatList'); // day-index will be added to t
 const tree: object = config.get('unflatTree');
 
 // Rate limit to not kill OADA?
-const rateLimit = 1000; // miliseconds
+// TODO: why does it need to be so long??
+const rateLimit = 10000; // miliseconds
 
 // TODO: Hopefully this bug in oada-cache gets fixed
 type Body<T> = { _rev: string; _id: string } & T;

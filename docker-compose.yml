@@ -5,11 +5,6 @@ services:
   # Overrides for oada-core services:
   ##########################################
 
-  # Add ourselves to yarn to do yarn install
-  yarn:
-    volumes:
-      - ./services-available/unfisk:/code/unfisk
-
   # Add ourselves to admin container:
   admin:
     volumes:
