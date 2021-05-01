@@ -1,0 +1,5 @@
+services:
+  unfisk:
+    extends:
+      file: ./services/unfisk/docker-compose.yml
+      service: unfisk

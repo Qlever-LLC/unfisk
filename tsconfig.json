@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "@tsconfig/node14/tsconfig.json",
+  "extends": "@tsconfig/node14",
   "compilerOptions": {
     "strict": true,
     "noUnusedLocals": true,
@@ -9,6 +9,7 @@
     "sourceMap": true,
     "declaration": true,
     "allowJs": true,
+    "rootDir": "src",
     "outDir": "dist"
   }
 }
