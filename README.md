@@ -1,7 +1,7 @@
 # Qlever-LLC/unfisk
 
 [![License](https://img.shields.io/github/license/Qlever-LLC/unfisk)](LICENSE)
-[![Docker Pulls](https://img.shields.io/docker/pulls/Qlever-LLC/unfisk)][dockerhub]
+[![Docker Pulls](https://img.shields.io/docker/pulls/qlever/unfisk)][dockerhub]
 
 OADA uservice to "unflatten" a list into a list of links.
 In other words, if you POST objects into a resource,
@@ -18,9 +18,9 @@ POST /bookmarks/trellisfw/asn-staging
 }
 ```
 
-(returns content-location = resources/d09i3jdf9/AAAAABBBBCCCC123)
+(returns header `content-location: resources/AAAAABBBBCCCC123`)
 
-would result in `unfisk` executing the following requests:
+would result in `unfisk` essentially executing the following requests:
 
 ```http
 PUT /resources/AAAAABBBBCCCC123
@@ -31,7 +31,7 @@ PUT /resources/AAAAABBBBCCCC123
 
 PUT /bookmarks/trellisfw/asns
 {
-  AAAAABBBBCCCC123: { "_id": "resources/AAAAABBBBCCCC123" },
+  "AAAAABBBBCCCC123": { "_id": "resources/AAAAABBBBCCCC123" },
 }
 
 DELETE /bookmarks/trellisfw/asn-staging
