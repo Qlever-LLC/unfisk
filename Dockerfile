@@ -1,11 +1,13 @@
 ARG NODE_VER=16-alpine
+ARG SERVICE=Qlever-LLC/unfisk
 
 FROM node:$NODE_VER AS install
+ARG SERVICE
 
-WORKDIR /trellis/unfisk
+WORKDIR /$SERVICE
 
-COPY ./.yarn /trellis/unfisk/.yarn
-COPY ./package.json ./yarn.lock ./.yarnrc.yml /trellis/unfisk/
+COPY ./.yarn /$SERVICE/.yarn
+COPY ./package.json ./yarn.lock ./.yarnrc.yml /$SERVICE/
 
 RUN yarn workspaces focus --all --production
 
@@ -14,20 +16,27 @@ FROM install AS build
 # Install dev deps too
 RUN yarn install --immutable
 
-COPY . /trellis/unfisk/
+COPY . /$SERVICE/
 
 # Build code and remove dev deps
-RUN yarn build && rm -rfv .yarn .pnp*
+RUN yarn build --verbose && rm -rfv .yarn .pnp*
 
 FROM node:$NODE_VER AS production
+ARG SERVICE
+
+# Install needed packages
+RUN apk add --no-cache \
+    dumb-init
 
 # Do not run service as root
 USER node
 
-WORKDIR /trellis/unfisk
+WORKDIR /$SERVICE
 
-COPY --from=install /trellis/unfisk/ /trellis/unfisk/
-COPY --from=build /trellis/unfisk/ /trellis/unfisk/
+COPY --from=install /$SERVICE/ /$SERVICE/
+COPY --from=build /$SERVICE/ /$SERVICE/
 
-ENTRYPOINT ["yarn", "run"]
+# Launch entrypoint with dumb-init
+# Remap SIGTERM to SIGINT https://github.com/Yelp/dumb-init#signal-rewriting
+ENTRYPOINT ["/usr/bin/dumb-init", "--rewrite", "15:2", "--", "yarn", "run"]
 CMD ["start"]

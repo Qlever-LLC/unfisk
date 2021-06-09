@@ -1,14 +1,17 @@
 services:
-  unfisk:
+  service:
     build:
       context: .
-    image: trellisfw/unfisk
+    image: qlever-llc/unfisk
     restart: unless-stopped
     environment:
-      - NODE_TLS_REJECT_UNAUTHORIZED
-      - NODE_ENV=${NODE_ENV:-development}
-      - DEBUG=${DEBUG-*:error,*:warn,*:info}
-      - token=${UNFISK_TOKEN}
-      # Connect to host if DOMAIN not set?
+      NODE_TLS_REJECT_UNAUTHORIZED:
+      NODE_ENV: ${NODE_ENV:-development}
+      DEBUG: ${DEBUG-*:error,*:warn,*:info}
+      # Connect to host if DOMAIN not set.
       # You should really not rely on this though. Set DOMAIN.
-      - domain=${DOMAIN:-host.docker.internal}
+      DOMAIN: ${DOMAIN:-host.docker.internal}
+      # TODO: Nicer way to deal with tokens?
+      TOKEN: ${TOKEN:-god}
+      # Rate limit unflattening
+      UNFLATTEN_RATE:
