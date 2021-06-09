@@ -23,14 +23,21 @@ const config = convict({
     domain: {
       doc: 'OADA API domain',
       format: String,
-      default: 'http://proxy',
+      default: 'localhost',
       env: 'DOMAIN',
       arg: 'domain',
+    },
+    mode: {
+      doc: 'Specific HTTP or HTTPS for OADA API connection',
+      format: ['http', 'https'],
+      default: 'https' as 'http' | 'https',
+      env: 'HTTP_MODE',
+      arg: 'mode',
     },
     token: {
       doc: 'OADA API token',
       format: Array,
-      default: ['god-proxy'],
+      default: ['god'],
       env: 'TOKEN',
       arg: 'token',
     },

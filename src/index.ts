@@ -28,10 +28,7 @@ const error = debug('unfisk:error');
 
 // tolerant of https or not https on domain
 const domain = config.get('oada.domain').replace(/^https?:\/\//, '');
-if (domain === 'proxy' || domain === 'localhost') {
-  warn('Domain is proxy or localhost, allowing self-signed https certificate');
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-}
+const mode = config.get('oada.mode');
 const tokens = config.get('oada.token');
 const flat = config.get('lists.flat');
 const unflat = config.get('lists.unflat'); // day-index will be added to this
@@ -49,7 +46,7 @@ async function unfisk(token: string) {
   // Connect to the OADA API
   const conn = oada
     ? oada.clone(token)
-    : (oada = await connect({ token, domain: 'https://' + domain }));
+    : (oada = await connect({ token, domain: `${mode}://${domain}` }));
 
   await ensureAllPathsExist(conn);
 
