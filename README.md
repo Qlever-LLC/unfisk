@@ -86,5 +86,5 @@ echo TOKEN=abc123 >> .env # Set API token(s) for the service
 docker-compose up -d
 ```
 
-[dockerhub]: https://hub.docker.com/repository/docker/Qlever-LLC/unfisk
+[dockerhub]: https://hub.docker.com/repository/docker/qlever/unfisk
 [oada reference api server]: https://github.com/OADA/server
