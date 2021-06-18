@@ -1,6 +1,6 @@
 {
   "name": "@qlever-llc/unfisk",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "OADA uservice to \"unflatten\" a list into a list of links",
   "author": "Alex Layton <alex@layton.in>",
   "license": "Apache-2.0",
@@ -23,7 +23,8 @@
     "convict": "^6.1.0",
     "debug": "^4.3.2",
     "dotenv": "^10.0.0",
-    "moment": "^2.29.1"
+    "moment": "^2.29.1",
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.1",
