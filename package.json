@@ -18,10 +18,10 @@
     ]
   },
   "dependencies": {
-    "@oada/client": "^2.4.1",
+    "@oada/client": "^2.4.2",
     "bluebird": "^3.7.2",
     "convict": "^6.1.0",
-    "debug": "^4.3.1",
+    "debug": "^4.3.2",
     "dotenv": "^10.0.0",
     "moment": "^2.29.1"
   },
@@ -31,12 +31,12 @@
     "@types/convict": "^6.0.2",
     "@types/debug": "^4.1.5",
     "@types/node": "^14.17.3",
-    "@types/prettier": "^2",
+    "@types/prettier": "^2.3.0",
     "chai": "^4.3.4",
     "lodash": "^4.17.21",
-    "mocha": "^9.0.0",
+    "mocha": "^9.0.1",
     "prettier": "^2.3.1",
     "ts-node": "^10.0.0",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.4"
   }
 }
