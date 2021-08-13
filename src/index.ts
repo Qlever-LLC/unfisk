@@ -16,7 +16,7 @@
 import debug from 'debug';
 import Bluebird from 'bluebird';
 
-import { Json, connect, OADAClient, Change } from '@oada/client';
+import { connect, OADAClient, Change } from '@oada/client';
 import moment from 'moment';
 
 import config from './config';
@@ -35,9 +35,6 @@ const unflat = config.get('lists.unflat'); // day-index will be added to this
 const tree = config.get('lists.unflatTree');
 const rateLimit = config.get('oada.trottle');
 
-// TODO: Hopefully this bug in oada-cache gets fixed
-type Body<T> = { _rev: string; _id: string } & T;
-
 /**
  * Shared OADA client instance?
  */
@@ -51,14 +48,19 @@ async function unfisk(token: string) {
   await ensureAllPathsExist(conn);
 
   // Get the initial state of asn-staging, then watch from there
-  const data = <Body<Json>>(
-    await conn
-      .get({ path: `/bookmarks/trellisfw/asn-staging` })
-      .then((r) => r.data)
-  );
+  const { data } = await conn.get({ path: `/bookmarks/trellisfw/asn-staging` });
+  if (
+    !data ||
+    typeof data !== 'object' ||
+    Array.isArray(data) ||
+    Buffer.isBuffer(data)
+  ) {
+    throw Error('Flat list is not a JSON resource');
+  }
   await conn.watch({
     path: flat,
-    rev: data._rev, // start where previous request left off, avoids race condition
+    // start where previous request left off, avoids race condition
+    rev: data._rev as string | number,
     watchCallback: flatHandler,
   });
 
@@ -66,9 +68,9 @@ async function unfisk(token: string) {
   trace('Processing fake change on startup');
   await flatHandler({
     type: 'merge',
-    body: data,
+    body: data as any,
     path: '',
-    resource_id: data._id,
+    resource_id: data._id as string,
   });
 
   // Run when there is a change to the flat list

@@ -1,6 +1,6 @@
 {
   "name": "@qlever-llc/unfisk",
-  "version": "1.2.2",
+  "version": "1.2.4",
   "description": "OADA uservice to \"unflatten\" a list into a list of links",
   "author": "Alex Layton <alex@layton.in>",
   "license": "Apache-2.0",
@@ -33,6 +33,7 @@
     "@types/debug": "^4.1.7",
     "@types/node": "^16.6.1",
     "@types/prettier": "^2.3.2",
+    "@yarnpkg/sdks": "^2.4.1-rc.4",
     "chai": "^4.3.4",
     "lodash": "^4.17.21",
     "mocha": "^9.0.3",
