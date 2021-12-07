@@ -3,9 +3,9 @@
 [![License](https://img.shields.io/github/license/Qlever-LLC/unfisk)](LICENSE)
 [![Docker Pulls](https://img.shields.io/docker/pulls/qlever/unfisk)][dockerhub]
 
-OADA uservice to "unflatten" a list into a list of links.
+OADA microservice to "unflatten" a list into a list of links.
 In other words, if you POST objects into a resource,
-and you want all those objects to actually become resources themselves,
+and you want all those objects to become resources themselves,
 this will create them as resources and link them at a destination.
 
 For example,

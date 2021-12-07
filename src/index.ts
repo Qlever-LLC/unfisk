@@ -1,4 +1,6 @@
-/* Copyright 2021 Qlever LLC
+/**
+ * @license
+ * Copyright 2021 Qlever LLC
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -13,11 +15,12 @@
  * limitations under the License.
  */
 
-import debug from 'debug';
-import Bluebird from 'bluebird';
+import { setTimeout } from 'node:timers/promises';
 
-import { connect, OADAClient, Change } from '@oada/client';
+import debug from 'debug';
 import moment from 'moment';
+
+import { Change, OADAClient, connect } from '@oada/client';
 
 import config from './config';
 
@@ -26,14 +29,14 @@ const trace = debug('unfisk:trace');
 const warn = debug('unfisk:warn');
 const error = debug('unfisk:error');
 
-// tolerant of https or not https on domain
+// Tolerant of https or not https on domain
 const domain = config.get('oada.domain').replace(/^https?:\/\//, '');
 const mode = config.get('oada.mode');
 const tokens = config.get('oada.token');
 const flat = config.get('lists.flat');
-const unflat = config.get('lists.unflat'); // day-index will be added to this
-const tree = config.get('lists.unflatTree');
-const rateLimit = config.get('oada.trottle');
+const unflat = config.get('lists.unflat'); // Day-index will be added to this
+const unflatTree = config.get('lists.unflatTree');
+const rateLimit = config.get('oada.throttle');
 
 /**
  * Shared OADA client instance?
@@ -55,11 +58,13 @@ async function unfisk(token: string) {
     Array.isArray(data) ||
     Buffer.isBuffer(data)
   ) {
-    throw Error('Flat list is not a JSON resource');
+    throw new Error('Flat list is not a JSON resource');
   }
+
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
   await conn.watch({
     path: flat,
-    // start where previous request left off, avoids race condition
+    // Start where previous request left off, avoids race condition
     rev: data._rev as string | number,
     watchCallback: flatHandler,
   });
@@ -68,6 +73,7 @@ async function unfisk(token: string) {
   trace('Processing fake change on startup');
   await flatHandler({
     type: 'merge',
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     body: data as any,
     path: '',
     resource_id: data._id as string,
@@ -80,30 +86,37 @@ async function unfisk(token: string) {
     const { type, body: data } = change;
 
     // Try to figure out the day from the change
-    const time: number | undefined = (data as any)?._meta?.modified;
+    const time = Number((data as any)?._meta?.modified);
     if (!time) {
       warn('failed to process day, using today');
     }
+
     const day = moment(time ? time * 1000 : undefined).format('YYYY-MM-DD');
 
-    // Get new items ignoring _ keys
-    const items = Object.keys(data || {}).filter((r) => !r.match(/^_/));
-    trace(
-      'flatHandler: there are ' + items.length + ' non-oada keys to handle'
-    );
     switch (type) {
       case 'merge':
-        await Bluebird.each(items, (id) => {
-          const done = unflatten({ item: (data as any)[id], id, day }).catch(
-            error
-          );
-          const delay = Bluebird.delay(rateLimit);
-          return Bluebird.all([done, delay]);
-        });
+        for (const [id, item] of Object.entries(data ?? {})) {
+          if (id.startsWith('_')) {
+            // Ignore _ keys
+            continue;
+          }
+
+          try {
+            const done = unflatten({ item, id, day });
+            const delay = setTimeout(rateLimit);
+            // eslint-disable-next-line no-await-in-loop
+            await Promise.all([done, delay]);
+          } catch (cError: unknown) {
+            error(cError);
+          }
+        }
+
         break;
+
       case 'delete':
-        trace('flatHandler: delete change, ignoriing');
+        trace('flatHandler: delete change, ignoring');
         break;
+
       default:
         warn(`Ignoring unknown change type ${type} to flat list`);
     }
@@ -126,7 +139,7 @@ async function unfisk(token: string) {
     await conn.put({
       contentType: 'application/vnd.trellisfw.asns.1+json',
       path: `${unflat}/day-index/${day}/${id}`,
-      tree,
+      tree: unflatTree,
       data: item,
     });
 
@@ -134,59 +147,60 @@ async function unfisk(token: string) {
     // Remove unflattened item from flat list
     await conn.delete({
       // TODO: Why do I need a content-type header?
-      //headers: { 'Content-Type': 'application/json' },
+      // headers: { 'Content-Type': 'application/json' },
       path: `${flat}/${id}`,
     });
   }
+}
 
-  async function ensureAllPathsExist(conn: OADAClient) {
-    const tree = {
-      bookmarks: {
-        _type: 'application/vnd.oada.bookmarks.1+json',
-        trellisfw: {
-          '_type': 'application/vnd.trellisfw.1+json',
-          'asns': {
-            _type: 'application/vnd.trellisfw.asns.1+json',
-          },
-          'asn-staging': {
-            _type: 'application/vnd.trellisfw.asn-staging.1+json',
-          },
+async function ensureAllPathsExist(conn: OADAClient) {
+  const tree = {
+    bookmarks: {
+      _type: 'application/vnd.oada.bookmarks.1+json',
+      trellisfw: {
+        '_type': 'application/vnd.trellisfw.1+json',
+        'asns': {
+          _type: 'application/vnd.trellisfw.asns.1+json',
+        },
+        'asn-staging': {
+          _type: 'application/vnd.trellisfw.asn-staging.1+json',
         },
       },
-    };
-    return Bluebird.map(
-      ['/bookmarks/trellisfw/asns', '/bookmarks/trellisfw/asn-staging'],
+    },
+  };
+  await Promise.all(
+    ['/bookmarks/trellisfw/asns', '/bookmarks/trellisfw/asn-staging'].map(
       async (path) => {
-        trace('ensureAllPathsExist: ensuring we have ' + path);
+        trace(`ensureAllPathsExist: ensuring we have ${path}`);
         try {
           await conn.get({ path });
-        } catch (e) {
-          if (e.status !== 404) {
-            return error(
-              'ensureAllPathsExist: Tried to get ' +
-                path +
-                ', but result was something other than 200 or 404: ',
-              e
+        } catch (error_: unknown) {
+          // @ts-expect-error stupid error handling
+          if (error_.status !== 404) {
+            error(
+              `ensureAllPathsExist: Tried to get ${path}, but result was something other than 200 or 404: `,
+              error_
             );
+            return;
           }
+
           info(
-            'ensureAllPathsExist: Path ' +
-              path +
-              ' did not exist, doing tree put to create it'
+            `ensureAllPathsExist: Path ${path} did not exist, doing tree put to create it`
           );
           return await conn.put({ path, data: {}, tree });
         }
-        info(
-          'ensureAllPathsExist: Path ' + path + ' exists already, leaving as-is'
-        );
+
+        info(`ensureAllPathsExist: Path ${path} exists already, leaving as-is`);
       }
-    );
-  }
+    )
+  );
 }
 
 for (const token of tokens) {
-  unfisk(token).catch((err) => {
-    error(err);
+  // eslint-disable-next-line github/no-then
+  unfisk(token).catch((cError) => {
+    error(cError);
+    // eslint-disable-next-line no-process-exit, unicorn/no-process-exit
     process.exit(1);
   });
 }

@@ -1,4 +1,6 @@
-/* Copyright 2021 Qlever LLC
+/**
+ * @license
+ * Copyright 2021 Qlever LLC
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -42,10 +44,10 @@ const config = convict({
       arg: 'token',
     },
     // TODO: why does it need to be so long??
-    trottle: {
+    throttle: {
       doc: 'Rate limit of how long to between unflattening items (ms)',
       format: Number,
-      default: 100000,
+      default: 100_000,
       env: 'UNFLATTEN_RATE',
       arg: 'rate',
     },
@@ -70,6 +72,7 @@ const config = convict({
           trellisfw: {
             _type: 'application/vnd.trellisfw.1+json',
             documents: {
+              // eslint-disable-next-line no-secrets/no-secrets
               _type: 'application/vnd.trellisfw.documents.1+json',
             },
             asns: {
