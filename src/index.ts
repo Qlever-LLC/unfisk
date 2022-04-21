@@ -73,7 +73,7 @@ async function unfisk(token: string) {
   trace('Processing fake change on startup');
   await flatHandler({
     type: 'merge',
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
     body: data as any,
     path: '',
     resource_id: data._id as string,
@@ -83,10 +83,11 @@ async function unfisk(token: string) {
   async function flatHandler(change: Readonly<Change>) {
     trace('flatHandler: new change received = ', change);
 
-    const { type, body: data } = change;
+    const { type, body } = change;
 
     // Try to figure out the day from the change
-    const time = Number((data as any)?._meta?.modified);
+    // @ts-expect-error meta nonsense
+    const time = Number(body?._meta?.modified);
     if (!time) {
       warn('failed to process day, using today');
     }
@@ -95,7 +96,7 @@ async function unfisk(token: string) {
 
     switch (type) {
       case 'merge':
-        for (const [id, item] of Object.entries(data ?? {})) {
+        for (const [id, item] of Object.entries(body ?? {})) {
           if (id.startsWith('_')) {
             // Ignore _ keys
             continue;
@@ -127,7 +128,7 @@ async function unfisk(token: string) {
     id,
     day,
   }: {
-    item: any;
+    item: unknown;
     id: string;
     day: string;
   }) {
@@ -140,14 +141,13 @@ async function unfisk(token: string) {
       contentType: 'application/vnd.trellisfw.asns.1+json',
       path: `${unflat}/day-index/${day}/${id}`,
       tree: unflatTree,
-      data: item,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+      data: item as any,
     });
 
     trace('Deleting original asn-staging..');
     // Remove unflattened item from flat list
     await conn.delete({
-      // TODO: Why do I need a content-type header?
-      // headers: { 'Content-Type': 'application/json' },
       path: `${flat}/${id}`,
     });
   }
@@ -187,7 +187,8 @@ async function ensureAllPathsExist(conn: OADAClient) {
           info(
             `ensureAllPathsExist: Path ${path} did not exist, doing tree put to create it`
           );
-          return await conn.put({ path, data: {}, tree });
+          await conn.put({ path, data: {}, tree });
+          return;
         }
 
         info(`ensureAllPathsExist: Path ${path} exists already, leaving as-is`);

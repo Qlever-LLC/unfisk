@@ -11,6 +11,7 @@ extends:
   - plugin:unicorn/recommended
   - plugin:security/recommended
   - plugin:sonarjs/recommended
+  - plugin:ava/recommended
   - xo
   - prettier
 
@@ -27,13 +28,14 @@ plugins:
   - security
   - no-secrets
   - sonarjs
+  - ava
   - notice
 
 parser: '@typescript-eslint/parser'
 
 parserOptions:
   ecmaVersion: 2020
-  project: './tsconfig.eslint.json'
+  project: './**/tsconfig.*'
 
 overrides:
   - files: '*.ts'
@@ -42,6 +44,9 @@ overrides:
       - plugin:import/typescript
       - xo-typescript
       - prettier
+    parserOptions:
+      ecmaVersion: 2020
+      project: './**/tsconfig.*'
     rules:
       '@typescript-eslint/naming-convention':
         [
@@ -116,3 +121,7 @@ rules:
   no-constructor-bind/no-constructor-bind: error
   no-constructor-bind/no-constructor-state: error
   sort-imports: [warn, { allowSeparatedGroups: true }]
+  ava/no-ignored-test-files: off
+  ava/no-import-test-files: off
+  ava/no-skip-test: warn
+  ava/no-skip-assert: warn

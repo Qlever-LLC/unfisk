@@ -45,6 +45,7 @@
     "asns",
     "Buildx",
     "codeql",
+    "lcov",
     "Snyk",
     "sonarjs",
     "trellisfw",

@@ -5,8 +5,12 @@
     "allowJs": true
   },
   "include": [
+    "**/*.ts",
     "**/*.js",
-    "**/*.ts"
+    "**/*.cjs",
+    "**/*.mjs",
+    "**/*.cts",
+    "**/*.mts"
   ],
   "exclude": []
 }

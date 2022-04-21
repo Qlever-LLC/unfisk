@@ -15,10 +15,8 @@
  * limitations under the License.
  */
 
+import 'dotenv/config';
 import convict from 'convict';
-import { config as load } from 'dotenv';
-
-load();
 
 const config = convict({
   oada: {
