@@ -1,19 +1,23 @@
 {
   "search.exclude": {
+    ".git": true,
     ".dccache": true,
     ".history": true,
+    ".nvimlog": true,
     "node_modules": true,
     "package.lock": true,
     "*.log": true,
-    ".nvimlog": true,
     ".DS_Store": true,
     "dist": true,
+    ".test": true,
     "*.tsbuildinfo": true,
     ".actrc": true,
     "act": true,
     ".yarn": true,
     ".pnp.*": true,
     ".vim": true,
+    "coverage": true,
+    "tags.*": true,
     "**/.yarn": true,
     "**/.pnp.*": true
   },
@@ -22,23 +26,26 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "eslint.nodePath": ".yarn/sdks",
   "files.exclude": {
+    ".git": true,
     ".dccache": true,
     ".history": true,
+    ".nvimlog": true,
     "node_modules": true,
     "package.lock": true,
-    ".nvimlog": true,
     "*.log": true,
     ".DS_Store": true,
     "dist": true,
+    ".test": true,
     "*.tsbuildinfo": true,
     ".actrc": true,
     "act": true,
     ".yarn": true,
     ".pnp.*": true,
-    ".vim": true
+    ".vim": true,
+    "coverage": true,
+    "tags.*": true
   },
   "eslint.packageManager": "yarn",
-  "eslint.useESLintClass": true,
   "licenser.author": "Qlever LLC",
   "licenser.license": "AL2",
   "cSpell.words": [
@@ -51,8 +58,26 @@
     "trellisfw",
     "unfisk",
     "unflat",
-    "UNFLATTEN",
+    "unflatten",
     "unflattened",
-    "unflattening"
+    "Unflattening"
+  ],
+  "eslint.format.enable": true,
+  "eslint.lintTask.enable": true,
+  "eslint.useESLintClass": true,
+  "explorerExclude.backup": null,
+  "npm.packageManager": "yarn",
+  "debug.javascript.autoAttachFilter": "smart",
+  "debug.javascript.breakOnConditionalError": true,
+  "debug.javascript.defaultRuntimeExecutable": {
+    "node": "yarn",
+    "pwa-node": "yarn"
+  },
+  "debug.javascript.autoAttachSmartPattern": [
+    "${workspaceFolder}/**",
+    "!**/node_modules/**",
+    "**/$KNOWN_TOOLS$/**",
+    "!**/yarn-*",
+    "!**/ava-*/**/cli.mjs"
   ]
 }

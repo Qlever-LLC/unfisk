@@ -1,6 +1,6 @@
 {
   "name": "@qlever-llc/unfisk",
-  "version": "1.2.4",
+  "version": "2.0.0",
   "description": "OADA uservice to \"unflatten\" a list into a list of links",
   "author": "Alex Layton <alex@layton.in>",
   "license": "Apache-2.0",
@@ -11,10 +11,11 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "start": "node --enable-source-maps dist/index.js",
     "build": "tsc -b",
+    "start": "node ${INSPECT:-} --enable-source-maps dist/index.js",
     "test": "yarn build test && c8 ava",
-    "test:debug": "ava -T 60m -svc 1 --no-worker-threads"
+    "test:debug": "ava -T 60m -svc 1 --no-worker-threads",
+    "lint": "eslint ."
   },
   "ava": {
     "failFast": false,
@@ -46,28 +47,29 @@
     ]
   },
   "dependencies": {
-    "@oada/client": "^4.0.0",
-    "convict": "^6.2.2",
+    "@oada/client": "^4.1.2",
+    "convict": "^6.2.3",
     "debug": "^4.3.4",
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.0.1",
     "moment": "^2.29.3",
-    "tslib": "^2.3.1"
+    "tslib": "^2.4.0"
   },
   "devDependencies": {
     "@ava/typescript": "^3.0.1",
-    "@tsconfig/node16": "^1.0.2",
+    "@tsconfig/node16": "^1.0.3",
     "@types/convict": "^6.1.1",
     "@types/debug": "^4.1.7",
-    "@types/node": "^16.11.27",
-    "@types/prettier": "^2.6.0",
-    "@typescript-eslint/eslint-plugin": "^5.20.0",
-    "@typescript-eslint/parser": "^5.20.0",
-    "@yarnpkg/sdks": "^3.0.0-rc.2",
-    "ava": "^4.2.0",
-    "eslint": "^8.13.0",
+    "@types/node": "^16.11.41",
+    "@types/prettier": "^2.6.3",
+    "@typescript-eslint/eslint-plugin": "^5.29.0",
+    "@typescript-eslint/parser": "^5.29.0",
+    "@yarnpkg/sdks": "^3.0.0-rc.9",
+    "ava": "4.0.0-rc.1",
+    "c8": "^7.11.3",
+    "eslint": "^8.18.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-config-xo": "^0.40.0",
-    "eslint-config-xo-typescript": "^0.50.0",
+    "eslint-config-xo": "^0.41.0",
+    "eslint-config-xo-typescript": "^0.51.1",
     "eslint-formatter-pretty": "^4.1.0",
     "eslint-import-resolver-node": "^0.3.6",
     "eslint-plugin-array-func": "^3.1.7",
@@ -85,12 +87,12 @@
     "eslint-plugin-optimize-regex": "^1.2.1",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^6.0.0",
-    "eslint-plugin-regexp": "^1.6.0",
+    "eslint-plugin-regexp": "^1.7.0",
     "eslint-plugin-security": "^1.5.0",
     "eslint-plugin-sonarjs": "^0.13.0",
     "eslint-plugin-unicorn": "^42.0.0",
-    "prettier": "^2.6.2",
-    "typescript": "^4.6.3"
+    "prettier": "^2.7.1",
+    "typescript": "^4.7.4"
   },
-  "packageManager": "yarn@3.2.0"
+  "packageManager": "yarn@3.2.1"
 }

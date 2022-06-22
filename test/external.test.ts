@@ -15,22 +15,28 @@
  * limitations under the License.
  */
 
+import config from '../dist/config.js';
+
 import test from 'ava';
 
 import { setTimeout } from 'node:timers/promises';
 
 import { OADAClient, connect } from '@oada/client';
 
-import testasn from './testasn';
+import testasn from './testasn.js';
 
 // DO NOT include ../ because we are testing externally.
+
+const domain = config.get('oada.domain').replace(/^https?:\/\//, '');
+const mode = config.get('oada.mode');
+const token = config.get('oada.token')[0]!;
 
 const asnKey = 'UNFISK_TEST_ASN1';
 const asnID = `resources/${asnKey}`;
 
 let conn: OADAClient;
 test.before(async () => {
-  conn = await connect({ domain: 'proxy', token: 'god-proxy' });
+  conn = await connect({ token, domain: `${mode}://${domain}` });
 });
 
 test.after(async () => {
@@ -42,21 +48,20 @@ test.beforeEach(async () => {
 });
 
 test('Should move the ASN when put into staging to same key in asns', async (t) => {
-  t.timeout(5000);
   const { headers: { 'content-location': stagingLocation } = {} } =
     await conn.put({
       path: `/bookmarks/trellisfw/asn-staging/${asnKey}`,
       contentType: 'application/vnd.trellisfw.asn-staging.sf.1+json',
       data: testasn,
     });
-  const postedkey = stagingLocation.match(/^.*\/([^/]+)$/)[1]; // Last thing on the content-location
+  const postedkey = /^.*\/([^/]+)$/.exec(stagingLocation!)![1]; // Last thing on the content-location
   await setTimeout(500); // Give it a second to update the parent
-  const { data: exists } = await conn.get({
+  const get = conn.get({
     path: `/bookmarks/trellisfw/asns/${postedkey}`,
   });
 
   t.is(postedkey, asnKey);
-  t.truthy(exists);
+  await t.notThrowsAsync(get);
 });
 
 async function cleanup() {

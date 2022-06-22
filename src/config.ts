@@ -41,7 +41,7 @@ const config = convict({
       env: 'TOKEN',
       arg: 'token',
     },
-    // TODO: why does it need to be so long??
+    // ???: why does it need to be so long??
     throttle: {
       doc: 'Rate limit of how long to between unflattening items (ms)',
       format: Number,
