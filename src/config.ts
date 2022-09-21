@@ -70,7 +70,6 @@ const config = convict({
           trellisfw: {
             _type: 'application/vnd.trellisfw.1+json',
             documents: {
-              // eslint-disable-next-line no-secrets/no-secrets
               _type: 'application/vnd.trellisfw.documents.1+json',
             },
             asns: {

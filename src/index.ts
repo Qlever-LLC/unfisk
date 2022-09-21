@@ -23,7 +23,7 @@ import { setTimeout } from 'node:timers/promises';
 import debug from 'debug';
 import moment from 'moment';
 
-import { Change, OADAClient, connect } from '@oada/client';
+import { type Change, type OADAClient, connect } from '@oada/client';
 
 const info = debug('unfisk:info');
 const trace = debug('unfisk:trace');
@@ -171,6 +171,7 @@ async function flatHandler(conn: OADAClient, change: Readonly<Change>) {
           const delay = setTimeout(rateLimit);
           // eslint-disable-next-line no-await-in-loop
           await Promise.all([done, delay]);
+          info('Unflattened item %s', id);
         } catch (cError: unknown) {
           error({ error: cError }, `Failed to unflatten ${id}`);
         }

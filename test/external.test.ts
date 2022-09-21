@@ -21,7 +21,7 @@ import test from 'ava';
 
 import { setTimeout } from 'node:timers/promises';
 
-import { OADAClient, connect } from '@oada/client';
+import { type OADAClient, connect } from '@oada/client';
 
 import testasn from './testasn.js';
 
