@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@oada/client": "^4.3.2",
-    "convict": "^6.2.3",
+    "convict": "^6.2.4",
     "debug": "^4.3.4",
     "dotenv": "^16.0.2",
     "moment": "^2.29.4",
