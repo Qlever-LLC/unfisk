@@ -17,6 +17,9 @@
 
 import config from './config.js';
 
+// Import this _before_ pino and/or DEBUG
+import '@oada/pino-debug';
+
 import { join } from 'node:path';
 import { setTimeout } from 'node:timers/promises';
 
@@ -53,7 +56,7 @@ async function unfisk(token: string) {
   await ensureAllPathsExist(conn);
 
   // Get the current state of asn-staging and for changes watch from there
-  // eslint-disable-next-line security/detect-non-literal-fs-filename
+
   const { changes, data } = await conn.watch({
     initialMethod: 'get',
     path: flat,
@@ -159,7 +162,7 @@ async function flatHandler(conn: OADAClient, change: Readonly<Change>) {
   const day = moment(time ? time * 1000 : undefined).format('YYYY-MM-DD');
 
   switch (type) {
-    case 'merge':
+    case 'merge': {
       for (const [id, item] of Object.entries(body ?? {})) {
         if (id.startsWith('_')) {
           // Ignore _ keys
@@ -178,13 +181,16 @@ async function flatHandler(conn: OADAClient, change: Readonly<Change>) {
       }
 
       break;
+    }
 
-    case 'delete':
+    case 'delete': {
       trace('flatHandler: delete change, ignoring');
       break;
+    }
 
-    default:
+    default: {
       warn('Ignoring unknown change type %s to flat list', type);
+    }
   }
 }
 

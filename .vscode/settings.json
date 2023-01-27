@@ -53,6 +53,7 @@
     "Buildx",
     "codeql",
     "lcov",
+    "pino",
     "Snyk",
     "sonarjs",
     "trellisfw",
