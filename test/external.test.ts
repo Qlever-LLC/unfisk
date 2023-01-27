@@ -21,6 +21,8 @@ import test from 'ava';
 
 import { setTimeout } from 'node:timers/promises';
 
+import moment from 'moment';
+
 import { type OADAClient, connect } from '@oada/client';
 
 import testasn from './testasn.js';
@@ -55,9 +57,10 @@ test('Should move the ASN when put into staging to same key in asns', async (t) 
       data: testasn,
     });
   const postedkey = /^.*\/([^/]+)$/.exec(stagingLocation!)![1]; // Last thing on the content-location
+  const now = moment().format('YYYY-MM-DD');
   await setTimeout(500); // Give it a second to update the parent
   const get = conn.get({
-    path: `/bookmarks/trellisfw/asns/${postedkey}`,
+    path: `/bookmarks/trellisfw/asns/day-index/${now}/${postedkey}`,
   });
 
   t.is(postedkey, asnKey);
