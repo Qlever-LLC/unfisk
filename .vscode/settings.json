@@ -77,8 +77,6 @@
   "debug.javascript.autoAttachSmartPattern": [
     "${workspaceFolder}/**",
     "!**/node_modules/**",
-    "**/$KNOWN_TOOLS$/**",
-    "!**/yarn-*",
-    "!**/ava-*/**/cli.mjs"
+    "**/$KNOWN_TOOLS$/**"
   ]
 }

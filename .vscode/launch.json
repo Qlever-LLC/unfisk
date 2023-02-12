@@ -25,6 +25,18 @@
       "remoteRoot": "/usr/src/app",
       "resolveSourceMapLocations": null,
       "port": "${input:port}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug AVA test file",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["test:debug"],
+      "program": "${file}",
+      "envFile": "${workspaceFolder}/test/test.env",
+      "outputCapture": "std",
+      "console": "integratedTerminal", // optional
+      "skipFiles": ["<node_internals>/**/*.js"]
     }
   ],
   "inputs": [

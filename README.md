@@ -1,7 +1,8 @@
 # Qlever-LLC/unfisk
 
-[![License](https://img.shields.io/github/license/Qlever-LLC/unfisk)](LICENSE)
 [![Docker Pulls](https://img.shields.io/docker/pulls/qlever/unfisk)][dockerhub]
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![License](https://img.shields.io/github/license/Qlever-LLC/unfisk)](LICENSE)
 
 OADA microservice to "unflatten" a list into a list of links.
 In other words, if you POST objects into a resource,
