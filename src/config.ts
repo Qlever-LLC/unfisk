@@ -27,13 +27,6 @@ const config = convict({
       env: 'DOMAIN',
       arg: 'domain',
     },
-    mode: {
-      doc: 'Specific HTTP or HTTPS for OADA API connection',
-      format: ['http', 'https'],
-      default: 'https' as 'http' | 'https',
-      env: 'HTTP_MODE',
-      arg: 'mode',
-    },
     token: {
       doc: 'OADA API token',
       format: Array,

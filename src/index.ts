@@ -36,7 +36,6 @@ const fatal = debug('unfisk:fatal');
 
 // Tolerant of https or not https on domain
 const domain = config.get('oada.domain').replace(/^https?:\/\//, '');
-const mode = config.get('oada.mode');
 const tokens = config.get('oada.token');
 const flat = config.get('lists.flat');
 const unflat = config.get('lists.unflat'); // Day-index will be added to this
@@ -51,7 +50,7 @@ async function unfisk(token: string) {
   // Connect to the OADA API
   const conn = oada
     ? oada.clone(token)
-    : (oada = await connect({ token, domain: `${mode}://${domain}` }));
+    : (oada = await connect({ token, domain }));
 
   await ensureAllPathsExist(conn);
 
