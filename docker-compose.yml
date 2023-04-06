@@ -2,7 +2,7 @@ services:
   unfisk:
     build:
       context: .
-    image: qlever-llc/unfisk
+    image: qlever/unfisk:${VERSION-build}
     restart: unless-stopped
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED:

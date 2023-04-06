@@ -27,6 +27,7 @@ import debug from 'debug';
 import moment from 'moment';
 
 import { type Change, type OADAClient, connect } from '@oada/client';
+import { Counter } from '@oada/lib-prom';
 
 const info = debug('unfisk:info');
 const trace = debug('unfisk:trace');
@@ -35,12 +36,17 @@ const error = debug('unfisk:error');
 const fatal = debug('unfisk:fatal');
 
 // Tolerant of https or not https on domain
-const domain = config.get('oada.domain').replace(/^https?:\/\//, '');
+const domain = config.get('oada.domain');
 const tokens = config.get('oada.token');
 const flat = config.get('lists.flat');
 const unflat = config.get('lists.unflat'); // Day-index will be added to this
 const unflatTree = config.get('lists.unflatTree');
 const rateLimit = config.get('oada.throttle');
+
+const unflattened = new Counter({
+  name: 'unflattened_items_total',
+  help: `Total number of items unflattened from ${flat}`,
+});
 
 /**
  * Shared OADA client instance?
@@ -134,15 +140,16 @@ async function ensureAllPathsExist(conn: OADAClient) {
   );
 }
 
-for await (const token of tokens) {
-  try {
-    await unfisk(token);
-  } catch (cError: unknown) {
-    fatal({ error: cError }, `Error running unfisk for token ${token}`);
-    // eslint-disable-next-line no-process-exit, unicorn/no-process-exit
-    process.exit(1);
-  }
-}
+await Promise.race(
+  tokens.map(async (token) => {
+    try {
+      await unfisk(token);
+    } catch (cError: unknown) {
+      fatal({ error: cError }, `Error running unfisk for token ${token}`);
+      throw cError as Error;
+    }
+  })
+);
 
 /**
  * Handle when there is a change to the flat list
@@ -221,4 +228,7 @@ async function unflatten({
   await conn.delete({
     path: `${flat}/${id}`,
   });
+
+  // Update prom counter
+  unflattened.inc();
 }
