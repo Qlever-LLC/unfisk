@@ -61,7 +61,6 @@ async function unfisk(token: string) {
   await ensureAllPathsExist(conn);
 
   // Get the current state of asn-staging and for changes watch from there
-
   const { changes, data } = await conn.watch({
     initialMethod: 'get',
     path: flat,
@@ -70,7 +69,7 @@ async function unfisk(token: string) {
     !data ||
     typeof data !== 'object' ||
     Array.isArray(data) ||
-    Buffer.isBuffer(data)
+    data instanceof Uint8Array
   ) {
     throw new TypeError('Flat list is not a JSON resource');
   }
