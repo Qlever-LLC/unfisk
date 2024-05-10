@@ -117,14 +117,14 @@ async function ensureAllPathsExist(conn: OADAClient) {
           if (cError.status !== 404) {
             error(
               { error: cError },
-              `ensureAllPathsExist: Tried to get ${path}, but result was something other than 200 or 404`
+              `ensureAllPathsExist: Tried to get ${path}, but result was something other than 200 or 404`,
             );
             return;
           }
 
           info(
             'ensureAllPathsExist: Path %s did not exist, doing tree put to create it',
-            path
+            path,
           );
           await conn.put({ path, data: {}, tree });
           return;
@@ -132,10 +132,10 @@ async function ensureAllPathsExist(conn: OADAClient) {
 
         info(
           'ensureAllPathsExist: Path %s exists already, leaving as-is',
-          path
+          path,
         );
-      }
-    )
+      },
+    ),
   );
 }
 
@@ -147,7 +147,7 @@ await Promise.race(
       fatal({ error: cError }, `Error running unfisk for token ${token}`);
       throw cError as Error;
     }
-  })
+  }),
 );
 
 /**

@@ -6,15 +6,15 @@ extends:
   - plugin:github/recommended
   - plugin:promise/recommended
   - plugin:regexp/recommended
-  - plugin:array-func/recommended
+  #- plugin:array-func/recommended
   - plugin:optimize-regex/recommended
   - plugin:import/recommended
   - plugin:unicorn/recommended
-  - plugin:security/recommended
-  - plugin:sonarjs/recommended
+  #- plugin:security/recommended
+  #- plugin:sonarjs/recommended
   - plugin:ava/recommended
   - xo
-  - prettier
+  #- prettier
 
 plugins:
   - '@typescript-eslint'
@@ -22,7 +22,7 @@ plugins:
   - github
   - promise
   - regexp
-  - array-func
+  #- array-func
   - optimize-regex
   - no-constructor-bind
   - import
@@ -45,7 +45,7 @@ overrides:
       - plugin:github/typescript
       - plugin:import/typescript
       - xo-typescript
-      - prettier
+      #- prettier
     parserOptions:
       ecmaVersion: 2020
       project: './**/tsconfig*.json'
@@ -78,7 +78,7 @@ overrides:
 
           { selector: typeLike, format: [PascalCase] },
         ]
-      '@typescript-eslint/restrict-template-expressions': off
+      '@typescript-eslint/restrict-template-expressions': 0
       '@typescript-eslint/no-shadow': warn
       '@typescript-eslint/no-unused-vars':
         [
@@ -114,7 +114,7 @@ rules:
          */
       onNonMatchingHeader: append
       nonMatchingTolerance: 0.7
-  sonarjs/no-duplicate-string: [warn, 5]
+  sonarjs/no-duplicate-string: [warn, { threshold: 5 }]
   sonarjs/cognitive-complexity: warn
   eslint-comments/no-unused-disable: off
   import/extensions: off
@@ -125,8 +125,8 @@ rules:
   i18n-text/no-en: off
   eslint-comments/no-use: off
   no-secrets/no-secrets: [error, { tolerance: 5 }]
-  no-empty-label: off
-  no-warning-comments: off
+  no-empty-label: 0
+  no-warning-comments: 0
   node/no-missing-import: off
   import/no-unresolved: off
   unicorn/prefer-spread: off
@@ -137,3 +137,5 @@ rules:
   ava/no-import-test-files: off
   ava/no-skip-test: warn
   ava/no-skip-assert: warn
+  # broken
+  prettier/prettier: off

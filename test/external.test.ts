@@ -30,7 +30,7 @@ import testasn from './testasn.js';
 // DO NOT include ../ because we are testing externally.
 
 const domain = config.get('oada.domain');
-const token = config.get('oada.token')[0]!;
+const token = config.get('oada.token')[0];
 
 const asnKey = 'UNFISK_TEST_ASN1';
 const asnID = `resources/${asnKey}`;
