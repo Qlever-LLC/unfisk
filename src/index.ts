@@ -81,7 +81,7 @@ async function unfisk(token: string) {
     body: data as any,
     path: '',
     resource_id: data._id as string,
-  };
+  } as const;
   trace({ change: fakeChange }, 'Processing fake change on startup');
   await flatHandler(conn, fakeChange);
 
@@ -105,7 +105,7 @@ async function ensureAllPathsExist(conn: OADAClient) {
         },
       },
     },
-  };
+  } as const;
   await Promise.all(
     ['/bookmarks/trellisfw/asns', '/bookmarks/trellisfw/asn-staging'].map(
       async (path) => {

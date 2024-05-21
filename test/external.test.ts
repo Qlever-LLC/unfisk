@@ -25,7 +25,7 @@ import moment from 'moment';
 
 import { type OADAClient, connect } from '@oada/client';
 
-import testasn from './testasn.js';
+import testAsn from './testAsn.js';
 
 // DO NOT include ../ because we are testing externally.
 
@@ -33,7 +33,7 @@ const domain = config.get('oada.domain');
 const token = config.get('oada.token')[0];
 
 const asnKey = 'UNFISK_TEST_ASN1';
-const asnID = `resources/${asnKey}`;
+const asnID = `resources/${asnKey}` as const;
 
 let conn: OADAClient;
 test.before(async () => {
@@ -53,7 +53,7 @@ test('Should move the ASN when put into staging to same key in asns', async (t) 
     await conn.put({
       path: `/bookmarks/trellisfw/asn-staging/${asnKey}`,
       contentType: 'application/vnd.trellisfw.asn-staging.sf.1+json',
-      data: testasn,
+      data: testAsn,
     });
   const postedkey = /^.*\/([^/]+)$/.exec(stagingLocation!)![1]; // Last thing on the content-location
   const now = moment().format('YYYY-MM-DD');

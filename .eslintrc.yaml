@@ -1,7 +1,7 @@
 root: true
 
 extends:
-  - 'plugin:@typescript-eslint/recommended'
+  - plugin:@typescript-eslint/recommended
   - plugin:node/recommended
   - plugin:github/recommended
   - plugin:promise/recommended
@@ -14,7 +14,7 @@ extends:
   #- plugin:sonarjs/recommended
   - plugin:ava/recommended
   - xo
-  #- prettier
+  - plugin:prettier/recommended
 
 plugins:
   - '@typescript-eslint'
@@ -37,7 +37,7 @@ parser: '@typescript-eslint/parser'
 
 parserOptions:
   ecmaVersion: 2020
-  project: './**/tsconfig*.json'
+  project: ./**/tsconfig*.json
 
 overrides:
   - files: '*.{c,m,}ts'
@@ -45,10 +45,10 @@ overrides:
       - plugin:github/typescript
       - plugin:import/typescript
       - xo-typescript
-      #- prettier
+      - plugin:prettier/recommended
     parserOptions:
       ecmaVersion: 2020
-      project: './**/tsconfig*.json'
+      project: ./**/tsconfig*.json
     rules:
       '@typescript-eslint/naming-convention':
         [
@@ -86,8 +86,8 @@ overrides:
           {
             args: after-used,
             ignoreRestSiblings: true,
-            varsIgnorePattern: '^_',
-            argsIgnorePattern: '^_',
+            varsIgnorePattern: ^_,
+            argsIgnorePattern: ^_,
           },
         ]
       '@typescript-eslint/consistent-type-definitions': [warn, interface]
@@ -137,5 +137,3 @@ rules:
   ava/no-import-test-files: off
   ava/no-skip-test: warn
   ava/no-skip-assert: warn
-  # broken
-  prettier/prettier: off
