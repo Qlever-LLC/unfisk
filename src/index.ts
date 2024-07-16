@@ -20,7 +20,7 @@ import config from './config.js';
 // Import this _before_ pino and/or DEBUG
 import '@oada/pino-debug';
 
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 import { setTimeout } from 'node:timers/promises';
 
 import debug from 'debug';
@@ -193,6 +193,7 @@ async function flatHandler(conn: OADAClient, change: Readonly<Change>) {
       break;
     }
 
+    // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
     default: {
       warn('Ignoring unknown change type %s to flat list', type);
     }
