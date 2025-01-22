@@ -20,6 +20,8 @@ ARG DIR
 
 WORKDIR ${DIR}
 
+RUN corepack enable
+
 COPY ./package.json ./yarn.lock ./.yarnrc.yml ${DIR}/
 
 RUN corepack yarn workspaces focus --all --production
@@ -44,6 +46,9 @@ RUN apk add --no-cache \
 
 # Do not run service as root
 USER node
+
+# Have corepack download yarn
+RUN corepack install
 
 WORKDIR ${DIR}
 
