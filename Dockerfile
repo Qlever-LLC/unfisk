@@ -47,9 +47,6 @@ RUN apk add --no-cache \
 # Do not run service as root
 USER node
 
-# Have corepack download yarn
-RUN corepack install
-
 WORKDIR ${DIR}
 
 COPY --from=install ${DIR} ${DIR}
@@ -59,3 +56,6 @@ COPY --from=build ${DIR} ${DIR}
 # Remap SIGTERM to SIGINT https://github.com/Yelp/dumb-init#signal-rewriting
 ENTRYPOINT ["/usr/bin/dumb-init", "--rewrite", "15:2", "--", "corepack", "yarn", "run"]
 CMD ["start"]
+
+# Have corepack download yarn
+RUN corepack install
