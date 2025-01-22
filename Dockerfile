@@ -20,8 +20,6 @@ ARG DIR
 
 WORKDIR ${DIR}
 
-RUN corepack enable
-
 COPY ./package.json ./yarn.lock ./.yarnrc.yml ${DIR}/
 
 RUN corepack yarn workspaces focus --all --production
@@ -39,6 +37,8 @@ RUN corepack yarn build --verbose && rm -rfv .yarn .pnp*
 
 FROM node:$NODE_VER AS production
 ARG DIR
+
+RUN corepack enable
 
 # Install needed packages
 RUN apk add --no-cache \
