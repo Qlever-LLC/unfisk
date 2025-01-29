@@ -38,7 +38,7 @@ RUN corepack yarn build --verbose && rm -rfv .yarn .pnp*
 FROM node:$NODE_VER AS production
 ARG DIR
 
-ENV COREPACK_HOME=${DIR}/.corepack
+ENV COREPACK_HOME=/home/node/.cache/node/corepack
 RUN corepack enable
 
 # Install needed packages
