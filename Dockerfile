@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 # Copyright 2022 Qlever LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +17,7 @@
 ARG NODE_VER=22-alpine
 ARG DIR=/usr/src/app/
 
-FROM node:$NODE_VER AS install
+FROM node:${NODE_VER} AS install
 ARG DIR
 
 WORKDIR ${DIR}
