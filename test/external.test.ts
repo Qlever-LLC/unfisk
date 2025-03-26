@@ -15,24 +15,24 @@
  * limitations under the License.
  */
 
-import config from '../dist/config.js';
+import config from "../dist/config.js";
 
-import test from 'ava';
+import test from "ava";
 
-import { setTimeout } from 'node:timers/promises';
+import { setTimeout } from "node:timers/promises";
 
-import moment from 'moment';
+import moment from "moment";
 
-import { type OADAClient, connect } from '@oada/client';
+import { type OADAClient, connect } from "@oada/client";
 
-import testAsn from './testAsn.js';
+import testAsn from "./testAsn.js";
 
 // DO NOT include ../ because we are testing externally.
 
-const domain = config.get('oada.domain');
-const token = config.get('oada.token')[0];
+const domain = config.get("oada.domain");
+const token = config.get("oada.token")[0];
 
-const asnKey = 'UNFISK_TEST_ASN1';
+const asnKey = "UNFISK_TEST_ASN1";
 const asnID = `resources/${asnKey}` as const;
 
 let conn: OADAClient;
@@ -48,15 +48,16 @@ test.beforeEach(async () => {
   await cleanup();
 });
 
-test('Should move the ASN when put into staging to same key in asns', async (t) => {
-  const { headers: { 'content-location': stagingLocation } = {} } =
-    await conn.put({
-      path: `/bookmarks/trellisfw/asn-staging/${asnKey}`,
-      contentType: 'application/vnd.trellisfw.asn-staging.sf.1+json',
-      data: testAsn,
-    });
-  const postedkey = /^.*\/([^/]+)$/.exec(stagingLocation!)![1]; // Last thing on the content-location
-  const now = moment().format('YYYY-MM-DD');
+test("Should move the ASN when put into staging to same key in asns", async (t) => {
+  const {
+    headers: { "content-location": stagingLocation } = {},
+  } = await conn.put({
+    path: `/bookmarks/trellisfw/asn-staging/${asnKey}`,
+    contentType: "application/vnd.trellisfw.asn-staging.sf.1+json",
+    data: testAsn,
+  });
+  const postedkey = /^.*\/([^/]+)$/.exec(stagingLocation!)?.[1]; // Last thing on the content-location
+  const now = moment().format("YYYY-MM-DD");
   await setTimeout(500); // Give it a second to update the parent
   const get = conn.get({
     path: `/bookmarks/trellisfw/asns/day-index/${now}/${postedkey}`,

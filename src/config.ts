@@ -15,64 +15,64 @@
  * limitations under the License.
  */
 
-import 'dotenv/config';
-import convict from 'convict';
+import "dotenv/config";
+import convict from "convict";
 
 const config = convict({
   oada: {
     domain: {
-      doc: 'OADA API domain',
+      doc: "OADA API domain",
       format: String,
-      default: 'localhost',
-      env: 'DOMAIN',
-      arg: 'domain',
+      default: "localhost",
+      env: "DOMAIN",
+      arg: "domain",
     },
     token: {
-      doc: 'OADA API token',
+      doc: "OADA API token",
       format: Array,
-      default: ['god'],
-      env: 'TOKEN',
-      arg: 'token',
+      default: ["god"],
+      env: "TOKEN",
+      arg: "token",
     },
     // ???: why does it need to be so long??
     throttle: {
-      doc: 'Rate limit of how long to between unflattening items (ms)',
+      doc: "Rate limit of how long to between unflattening items (ms)",
       format: Number,
       default: 100_000,
-      env: 'UNFLATTEN_RATE',
-      arg: 'rate',
+      env: "UNFLATTEN_RATE",
+      arg: "rate",
     },
   },
   lists: {
     flat: {
       doc: 'Path to the "flat" resource of items',
       format: String,
-      default: '/bookmarks/trellisfw/asn-staging',
+      default: "/bookmarks/trellisfw/asn-staging",
     },
     unflat: {
-      doc: 'Path of OADA list in which to link unflattened items',
+      doc: "Path of OADA list in which to link unflattened items",
       format: String,
-      default: '/bookmarks/trellisfw/asns',
+      default: "/bookmarks/trellisfw/asns",
     },
     unflatTree: {
-      doc: 'OADA tree corresponding to unflat path',
+      doc: "OADA tree corresponding to unflat path",
       format: Object,
       default: {
         bookmarks: {
-          _type: 'application/vnd.oada.bookmarks.1+json',
+          _type: "application/vnd.oada.bookmarks.1+json",
           trellisfw: {
-            _type: 'application/vnd.trellisfw.1+json',
+            _type: "application/vnd.trellisfw.1+json",
             documents: {
-              _type: 'application/vnd.trellisfw.documents.1+json',
+              _type: "application/vnd.trellisfw.documents.1+json",
             },
             asns: {
-              '_type': 'application/vnd.trellisfw.asns.1+json',
-              'day-index': {
-                '*': {
-                  '_type': 'application/vnd.trellisfw.asns.1+json',
-                  '_rev': 0,
-                  '*': {
-                    _type: 'application/vnd.trellisfw.asn.sf.1+json',
+              _type: "application/vnd.trellisfw.asns.1+json",
+              "day-index": {
+                "*": {
+                  _type: "application/vnd.trellisfw.asns.1+json",
+                  _rev: 0,
+                  "*": {
+                    _type: "application/vnd.trellisfw.asn.sf.1+json",
                     _rev: 0,
                   },
                 },
@@ -89,6 +89,6 @@ const config = convict({
  * Error if our options are invalid.
  * Warn if extra options found.
  */
-config.validate({ allowed: 'warn' });
+config.validate({ allowed: "warn" });
 
 export default config;
